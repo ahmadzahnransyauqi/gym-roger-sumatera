@@ -6,173 +6,95 @@ import axios from "axios";
 
 export default function Membership() {
   const [promos, setPromos] = useState([]);
+  const [plans, setPlans] = useState({
+    weekly: [],
+    monthly: [],
+    yearly: [],
+  });
+
   const [canScroll, setCanScroll] = useState(false);
   const carouselRef = useRef(null);
 
-  // Fetch promos from backend
+  // -------- Fetch Promos --------
   useEffect(() => {
     axios
-      .get("/api/admin/promos")
-      .then((res) => {
-        console.log("Promos fetched:", res.data);
-        setPromos(res.data);
-      })
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/promos`)
+      .then((res) => setPromos(res.data))
       .catch((err) => console.error("Failed to fetch promos:", err));
   }, []);
 
-  // Check if carousel can scroll
+  // -------- Fetch Membership Plans from DB --------
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/plans`)
+      .then((res) => {
+        const result = { weekly: [], monthly: [], yearly: [] };
+
+        res.data.forEach((p) => {
+          // benefits are ALREADY array from backend
+          const benefitList = Array.isArray(p.benefits) ? p.benefits : [];
+
+          const planObj = {
+            name: p.name,
+            price: `Rp ${parseInt(p.price).toLocaleString()}`,
+            bg: "#444444",
+            highlight: p.name.toLowerCase().includes("premium"),
+            benefits: benefitList,
+          };
+
+          const dur = p.duration_days;
+
+          if (dur <= 7) {
+            result.weekly.push(planObj);
+          } else if (dur <= 31) {
+            result.monthly.push(planObj);
+          } else {
+            result.yearly.push(planObj);
+          }
+        });
+
+        setPlans(result);
+      })
+      .catch((err) => console.error("Failed to fetch plans:", err));
+  }, []);
+
+  // -------- Carousel Scroll Detection --------
   useEffect(() => {
     const carousel = carouselRef.current;
-    if (!carousel) return;
+    if (!carousel || !promos.length) return;
 
     const totalWidth = [...carousel.children[0].children].reduce(
-      (acc, card) => acc + card.offsetWidth + 16, // 16px gap
+      (acc, card) => acc + card.offsetWidth + 16,
       0
     );
 
     setCanScroll(totalWidth > carousel.offsetWidth);
   }, [promos]);
 
-  // Carousel scroll logic
+  // -------- Auto Scroll Carousel --------
   useEffect(() => {
-    if (!canScroll) return; // don't scroll if not needed
+    if (!canScroll) return;
 
     const carousel = carouselRef.current;
-    if (!carousel) return;
-
     let scrollAmount = 0;
     const speed = 2;
 
     const scroll = () => {
       if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
         scrollAmount = 0;
-      } else {
-        scrollAmount += speed;
-      }
+      } else scrollAmount += speed;
+
       carousel.scrollLeft = scrollAmount;
       requestAnimationFrame(scroll);
     };
 
     scroll();
-  }, [promos, canScroll]);
+  }, [canScroll, promos]);
 
-  const weeklyPlans = [
-    {
-      name: "Basic",
-      price: "Rp 50.000/week",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "Gym access (regular hours)",
-        "Free water refill",
-        "Locker room access",
-      ],
-    },
-    {
-      name: "Premium",
-      price: "Rp 90.000/week",
-      bg: "#ff1f1f",
-      highlight: true,
-      benefits: [
-        "Full gym access (all equipment)",
-        "1x trainer guidance",
-        "Access to group classes",
-        "Free towel service",
-      ],
-    },
-    {
-      name: "Elite",
-      price: "Rp 130.000/week",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "Full 24-hour access",
-        "2x personal trainer sessions",
-        "Unlimited group classes",
-        "VIP changing room",
-        "Free protein drink (1x)",
-      ],
-    },
-  ];
-  const monthlyPlans = [
-    {
-      name: "Basic",
-      price: "Rp 150.000/month",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "Regular gym access",
-        "1x trainer consultation",
-        "Access to public lockers",
-      ],
-    },
-    {
-      name: "Premium",
-      price: "Rp 300.000/month",
-      bg: "#ff1f1f",
-      highlight: true,
-      benefits: [
-        "Full gym access",
-        "4x personal trainer sessions",
-        "Access to group classes",
-        "Private locker",
-      ],
-    },
-    {
-      name: "Elite",
-      price: "Rp 500.000/month",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "24-hour access",
-        "8x personal trainer sessions",
-        "Monthly body assessment",
-        "Free merchandise",
-      ],
-    },
-  ];
-  const yearlyPlans = [
-    {
-      name: "Basic",
-      price: "Rp 1.200.000/year",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "12-month gym access",
-        "2x trainer consultations",
-        "Access to lockers",
-        "Free gym T-shirt",
-      ],
-    },
-    {
-      name: "Premium",
-      price: "Rp 2.400.000/year",
-      bg: "#ff1f1f",
-      highlight: true,
-      benefits: [
-        "Full gym access for 12 months",
-        "12x personal trainer sessions",
-        "Unlimited group classes",
-        "Private locker",
-        "1x body composition check",
-      ],
-    },
-    {
-      name: "Elite",
-      price: "Rp 3.500.000/year",
-      bg: "#444444",
-      highlight: false,
-      benefits: [
-        "24-hour unlimited access",
-        "24x personal trainer sessions",
-        "Free body composition check every month",
-        "Priority booking for classes",
-      ],
-    },
-  ];
   return (
     <>
       <Header />
+
       <h2 className="text-white font-bold text-4xl md:text-[50px] text-center mt-12 mb-8">
         Membership
       </h2>
@@ -215,17 +137,16 @@ export default function Membership() {
         </div>
       </div>
 
-      {/* Weekly Plans */}
-      <MembershipLayout title="Weekly Plans" plans={weeklyPlans} />
+      {/* Render Weekly / Monthly / Yearly */}
+      <MembershipLayout title="Weekly Plans" plans={plans.weekly} />
       <div className="w-full h-16 md:h-20"></div>
 
-      {/* Monthly Plans */}
-      <MembershipLayout title="Monthly Plans" plans={monthlyPlans} />
+      <MembershipLayout title="Monthly Plans" plans={plans.monthly} />
       <div className="w-full h-16 md:h-20"></div>
 
-      {/* Yearly Plans */}
-      <MembershipLayout title="Yearly Plans" plans={yearlyPlans} />
+      <MembershipLayout title="Yearly Plans" plans={plans.yearly} />
       <div className="w-full h-12"></div>
+
       <Footer />
     </>
   );

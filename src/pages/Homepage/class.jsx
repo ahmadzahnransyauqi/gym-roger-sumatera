@@ -23,7 +23,7 @@ export default function Class() {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await axios.get("/api/admin/classes");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/classes`);
         const mapped = res.data.map((cls) => ({
           name: cls.class_name,
           type: cls.categories,
@@ -43,8 +43,18 @@ export default function Class() {
   const categoryData = [
     { name: "Dance", icon: DanceIcon, image: DanceClass, color: "#FF6666" },
     { name: "Cardio", icon: CardioIcon, image: CardioClass, color: "#7D6EFF" },
-    { name: "Strength", icon: StrengthIcon, image: StrengthClass, color: "#4EFF69" },
-    { name: "Mind & Body", icon: MindBodyIcon, image: MindBodyClass, color: "#FFF04E" },
+    {
+      name: "Strength",
+      icon: StrengthIcon,
+      image: StrengthClass,
+      color: "#4EFF69",
+    },
+    {
+      name: "Mind & Body",
+      icon: MindBodyIcon,
+      image: MindBodyClass,
+      color: "#FFF04E",
+    },
   ];
 
   // Filter classes by search & category
@@ -81,7 +91,9 @@ export default function Class() {
           justifyContent: "center",
         }}
       >
-        <h1 className="text-3xl md:text-5xl lg:text-5xl text-white font-bold">Class</h1>
+        <h1 className="text-3xl md:text-5xl lg:text-5xl text-white font-bold">
+          Class
+        </h1>
       </div>
 
       {/* Categories */}
@@ -94,7 +106,9 @@ export default function Class() {
             <div
               key={cat.name}
               className={`relative rounded-lg overflow-hidden h-40 md:h-56 flex items-end p-3 cursor-pointer transition-transform duration-200 ${
-                selectedCategory === cat.name ? "scale-105 border-2 border-white" : ""
+                selectedCategory === cat.name
+                  ? "scale-105 border-2 border-white"
+                  : ""
               }`}
               style={{
                 backgroundImage: `url(${cat.image})`,
@@ -102,7 +116,9 @@ export default function Class() {
                 backgroundPosition: "center",
               }}
               onClick={() =>
-                setSelectedCategory(selectedCategory === cat.name ? "" : cat.name)
+                setSelectedCategory(
+                  selectedCategory === cat.name ? "" : cat.name
+                )
               }
             >
               {/* Gradient overlay */}
@@ -141,34 +157,41 @@ export default function Class() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredClasses.map((cls, index) => {
-            const categoryInfo = categoryData.find((c) => c.name === cls.type) || {};
+            const categoryInfo =
+              categoryData.find((c) => c.name === cls.type) || {};
             return (
               <div
                 key={index}
-                className="relative rounded-xl overflow-hidden h-64 sm:h-72 lg:h-80 flex flex-col justify-end p-4 shadow-2xl transform transition duration-300 hover:scale-[1.02] cursor-pointer"
-                style={{ backgroundColor: "#252525" }}
+                className="relative rounded-xl flex flex-col justify-between p-5 shadow-lg transform transition duration-300 hover:scale-[1.02] cursor-pointer"
+                style={{
+                  backgroundColor: categoryInfo.color
+                    ? `${categoryInfo.color}33`
+                    : "#333", // semi-transparent color
+                  borderLeft: `6px solid ${categoryInfo.color || "#FFF"}`,
+                }}
               >
                 {/* Category Icon */}
-                <div className="absolute top-4 left-4 z-20">
-                  {categoryInfo.icon && <img src={categoryInfo.icon} alt={cls.type} className="w-8 md:w-10 h-auto" />}
-                </div>
-
-                {/* Intensity Tag */}
-                <div className="absolute top-4 right-4 z-20">
-                  <span
-                    className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white uppercase tracking-wider shadow-md"
-                    style={{ backgroundColor: categoryInfo.color || "#FFF" }}
-                  >
-                    {cls.intensity}
+                <div className="flex items-center gap-3 mb-4">
+                  {categoryInfo.icon && (
+                    <img
+                      src={categoryInfo.icon}
+                      alt={cls.type}
+                      className="w-10 h-10"
+                    />
+                  )}
+                  <span className="text-white font-bold text-lg md:text-xl">
+                    {cls.type}
                   </span>
                 </div>
 
-                {/* Class Name & Type */}
-                <div className="relative z-10 w-full flex flex-col gap-1">
-                  <p className="text-xl md:text-2xl font-extrabold leading-tight" style={{ color: categoryInfo.color || "#FFF" }}>
+                {/* Class Name */}
+                <div className="mt-auto">
+                  <p className="text-2xl font-extrabold text-white">
                     {cls.name}
                   </p>
-                  <p className="text-sm md:text-base text-gray-300 uppercase tracking-wide">{cls.type}</p>
+                  <span className="text-sm text-gray-300 uppercase tracking-wide">
+                    {cls.intensity}
+                  </span>
                 </div>
               </div>
             );

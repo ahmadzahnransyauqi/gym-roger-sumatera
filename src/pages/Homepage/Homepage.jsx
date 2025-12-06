@@ -145,23 +145,6 @@ export default function Home() {
 
         {/* Services Grid/Layout */}
         <div className="w-full max-w-7xl mx-auto flex flex-wrap justify-center md:justify-around items-end gap-y-12 gap-x-6">
-          {/* Personal Training (No translation needed for mobile) */}
-          <div className="flex flex-col items-center w-full max-w-[250px]">
-            <div
-              className="w-full h-80 bg-[#ff1f1f] rounded-lg shadow-lg"
-              style={{
-                backgroundImage: `url(${PersonalTrainer})`,
-                backgroundSize: "cover",
-                backgroundPosition: "80% 20%",
-              }}
-            ></div>
-            <p className="text-white mt-3 text-xl font-semibold text-center">
-              Personal Training
-            </p>
-            <p className="text-white text-base text-center">
-              Train with our professional trainer
-            </p>
-          </div>
 
           {/* Group Classes */}
           <div className="flex flex-col items-center w-full max-w-[250px] md:translate-y-14">
@@ -187,7 +170,7 @@ export default function Home() {
               Nutrition Guidance
             </p>
             <p className="text-white mb-3 text-base text-center max-w-[280px] hidden md:block">
-              Nutrition advice for better training results and a healthier
+              Recommendation of Food Nutrition for better training results and a healthier
               lifestyle
             </p>
             <div
@@ -199,7 +182,7 @@ export default function Home() {
               }}
             ></div>
             <p className="text-white mb-3 text-base text-center max-w-[280px] block md:hidden">
-              Nutrition advice for better training results and a healthier
+              Recommendation of Food Nutrition for better training results and a healthier
               lifestyle
             </p>
           </div>
@@ -210,7 +193,7 @@ export default function Home() {
               Body Assesment
             </p>
             <p className="text-white mb-3 text-base text-center max-w-[280px] hidden md:block">
-              Regular body evaluation to track your fitness progress.
+              Regular body evaluation to know your fitness progress.
             </p>
             <div
               className="w-full h-80 bg-[#ff1f1f] rounded-lg shadow-lg"
@@ -221,7 +204,7 @@ export default function Home() {
               }}
             ></div>
             <p className="text-white mb-3 text-base text-center max-w-[280px] block md:hidden">
-              Regular body evaluation to track your fitness progress.
+              Regular body evaluation to know your fitness progress.
             </p>
           </div>
         </div>
@@ -231,7 +214,7 @@ export default function Home() {
       <div className="mt-20 md:mt-32 flex flex-col justify-center px-4">
         <div>
           <h2 className="text-white text-3xl font-bold text-center">
-            Unlimited Access to 100+ Classes
+            Unlimited Access to Many Classes
           </h2>
           <p className="text-white text-lg md:text-xl text-center mb-10">
             Designed just for you

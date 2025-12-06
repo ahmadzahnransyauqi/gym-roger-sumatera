@@ -8,6 +8,7 @@ import AchmadCaesar from "../../assets/AchmadCaesarRamadhan.webp";
 import MHDDepa from "../../assets/MHDDepa.webp";
 import MHDHafiz from "../../assets/MHDHafiz.webp";
 import Zahran from "../../assets/stelle.webp";
+import Muaz from "../../assets/Muaz_wkwk.webp";
 
 export default function AboutUs() {
   return (
@@ -219,7 +220,11 @@ export default function AboutUs() {
 
           {/* Founder 4 — Translated ONLY on Desktop (lg) */}
           <div className="lg:translate-y-20">
-            <div className="bg-[#ff1f1f] w-40 h-56 md:w-48 md:h-70 rounded-lg mb-5 justify-self-center"></div>
+            <div className="bg-[#ff1f1f] w-40 h-56 md:w-48 md:h-70 rounded-lg mb-5 justify-self-center"  style={{
+                backgroundImage: `url(${Muaz})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}></div>
             <p className="text-white text-lg md:text-[20px] font-bold text-center">
               Muaz Alfattah Fadhani
             </p>

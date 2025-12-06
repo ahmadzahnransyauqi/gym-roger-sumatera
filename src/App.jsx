@@ -16,7 +16,8 @@ import Sidebar from "./pages/UserDashboard/Sidebar.jsx";
 import NutritionGuidance from "./pages/UserDashboard/NutritionGuidance.jsx";
 import GroupClasses from "./pages/UserDashboard/GroupClasses.jsx";
 import Settings from "./pages/UserDashboard/Setting.jsx";
-import PersonalTraining from "./pages/UserDashboard/PersonalTraining.jsx";
+import Billing from "./pages/UserDashboard/Billing.jsx";
+import ProtectedRoute from "./component/ProtectedRoute.jsx"; // import the new component
 
 function UserLayout() {
   return (
@@ -34,6 +35,7 @@ function UserLayout() {
 export default function App() {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -42,15 +44,33 @@ export default function App() {
       <Route path="/membership" element={<Membership />} />
       <Route path="/class" element={<Class />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/admin" element={<AdminDashboard />} />
 
-      <Route path="/user" element={<UserLayout />}>
+      {/* Admin dashboard protected */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* User dashboard protected */}
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute role="member">
+            <UserLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Dashboard />} />
         <Route path="bodyassessment" element={<BodyAssessment />} />
         <Route path="nutritionguidance" element={<NutritionGuidance />} />
         <Route path="groupclasses" element={<GroupClasses />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="billing" element={<Billing />} />
       </Route>
     </Routes>
   );

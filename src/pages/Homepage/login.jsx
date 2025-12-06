@@ -22,7 +22,7 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginId: username, password }),
@@ -36,7 +36,11 @@ export default function Login() {
       }
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        if (res.status === 401) {
+          setError("Username or password is incorrect.");
+        } else {
+          setError(data.error || "Login failed");
+        }
         setLoading(false);
         return;
       }
@@ -50,7 +54,11 @@ export default function Login() {
       else if (data.user?.role === "member") navigate("/user");
       else navigate("/");
     } catch (err) {
-      setError(err.message === "Failed to fetch" ? "Network error" : err.message || "Login error");
+      setError(
+        err.message === "Failed to fetch"
+          ? "Network error"
+          : err.message || "Login error"
+      );
       setLoading(false);
     }
   };
@@ -62,7 +70,10 @@ export default function Login() {
         <h2 className="text-3xl font-extrabold text-center mb-1">Login</h2>
         <h3 className="text-sm text-center mb-6 text-gray-300">
           Don't have an account?{" "}
-          <Link to="/register" className="text-[#ff1f1f] hover:text-[#ff6161] font-semibold transition-colors">
+          <Link
+            to="/register"
+            className="text-[#ff1f1f] hover:text-[#ff6161] font-semibold transition-colors"
+          >
             Sign Up
           </Link>
         </h3>
@@ -70,12 +81,24 @@ export default function Login() {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm mb-2">Email / Username</label>
-            <input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-3 rounded bg-[#333] text-white focus:outline-none" type="text" placeholder="email or username" />
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full p-3 rounded bg-[#333] text-white focus:outline-none"
+              type="text"
+              placeholder="email or username"
+            />
           </div>
 
           <div>
             <label className="block text-sm mb-2">Password</label>
-            <input value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 rounded bg-[#333] text-white focus:outline-none" type="password" placeholder="Enter your Password" />
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 rounded bg-[#333] text-white focus:outline-none"
+              type="password"
+              placeholder="Enter your Password"
+            />
           </div>
 
           <div className="flex justify-between items-center text-sm">
@@ -90,7 +113,10 @@ export default function Login() {
               <label htmlFor="dontforget">Remember Me</label>
             </div>
 
-            <Link to="/forgotpassword" className="hover:text-[#ff6161] text-[#ff1f1f] transition-colors font-medium text-xs sm:text-sm">
+            <Link
+              to="/forgotpassword"
+              className="hover:text-[#ff6161] text-[#ff1f1f] transition-colors font-medium text-xs sm:text-sm"
+            >
               Forgot Password?
             </Link>
           </div>
@@ -98,7 +124,11 @@ export default function Login() {
           {error && <div className="text-red-400 text-sm">{error}</div>}
 
           <div className="pt-4">
-            <button type="submit" disabled={loading} className="w-full text-lg font-bold text-white bg-[#ff1f1f] hover:bg-[#d41b1b] py-3 rounded-lg shadow-md transition-colors disabled:opacity-60">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full text-lg font-bold text-white bg-[#ff1f1f] hover:bg-[#d41b1b] py-3 rounded-lg shadow-md transition-colors disabled:opacity-60"
+            >
               {loading ? "Logging in..." : "Log In"}
             </button>
           </div>

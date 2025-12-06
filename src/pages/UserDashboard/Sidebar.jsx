@@ -6,7 +6,11 @@ import {
   Settings,
   Home,
   LogOut,
+  Wallet,
+  Menu,
+  X,
 } from "lucide-react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hook/useAuth";
 import logoimg from "../../assets/logotext.png";
@@ -18,6 +22,7 @@ export default function Sidebar() {
   const { logout } = useAuth();
 
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // For mobile toggle
 
   const menuItems = [
     { id: "/user", label: "Dashboard", icon: Home },
@@ -26,6 +31,7 @@ export default function Sidebar() {
     { id: "/user/groupclasses", label: "Group Classes", icon: Users },
     { id: "/user/profile", label: "Profile", icon: User },
     { id: "/user/settings", label: "Settings", icon: Settings },
+    { id: "/user/billing", label: "Billing", icon: Wallet },
   ];
 
   const handleLogout = () => {
@@ -41,10 +47,25 @@ export default function Sidebar() {
     setShowLogoutPopup(false);
   };
 
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <>
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#202020] text-white"
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
       <aside
-        className="w-64 min-h-screen shrink-0 p-6"
+        className={`fixed lg:relative top-0 left-0 h-screen w-64 p-6 z-40 transform transition-transform duration-300 ease-in-out overflow-y-auto lg:overflow-hidden ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 lg:block`}
         style={{ backgroundColor: "#202020" }}
       >
         <div className="mb-8">
@@ -60,6 +81,7 @@ export default function Sidebar() {
               <Link
                 key={item.id}
                 to={item.id}
+                onClick={() => setIsOpen(false)} // Close on mobile after click
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors"
                 style={{
                   backgroundColor: isActive ? "#252525" : "transparent",
@@ -86,6 +108,14 @@ export default function Sidebar() {
           <span>Logout</span>
         </button>
       </aside>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
 
       {/* 🔥 Custom Logout Popup */}
       {showLogoutPopup && (

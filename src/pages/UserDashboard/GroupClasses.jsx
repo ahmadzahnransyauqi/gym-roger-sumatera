@@ -31,7 +31,7 @@ export default function GroupClasses() {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin/classes", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -61,7 +61,7 @@ export default function GroupClasses() {
     const fetchJoined = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/admin/classes/joined-classes",
+          `${import.meta.env.VITE_API_URL}/api/admin/classes/joined-classes`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -83,7 +83,7 @@ export default function GroupClasses() {
     try {
       if (classAction === "join") {
         const res = await axios.patch(
-          `http://localhost:3000/api/admin/classes/${classData.id}/join`,
+          `${import.meta.env.VITE_API_URL}/api/admin/classes/${classData.id}/join`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -96,7 +96,7 @@ export default function GroupClasses() {
         );
       } else {
         await axios.patch(
-          `http://localhost:3000/api/admin/classes/${classData.id}/leave`,
+          `${import.meta.env.VITE_API_URL}/api/admin/classes/${classData.id}/leave`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -150,71 +150,50 @@ export default function GroupClasses() {
   };
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        backgroundColor: "#121212",
-        minHeight: "100vh",
-      }}
-    >
-      <h2 style={{ color: "white", fontSize: "2rem", marginBottom: 10 }}>
+    <div className="min-h-screen bg-[#121212] p-4 md:p-6 lg:p-8">
+      <h2 className="text-white text-2xl md:text-3xl font-bold mb-4 md:mb-6">
         Group Classes
       </h2>
 
       {/* SEARCH + FILTERS */}
-      <div
-        className="mb-8 p-4 rounded-lg"
-        style={{ backgroundColor: "#1e1e1e" }}
-      >
+      <div className="mb-6 md:mb-8 p-4 md:p-6 rounded-lg bg-[#1e1e1e]">
         <div className="relative mb-4">
           <input
             type="text"
             placeholder="Search by class name or instructor..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-3 pl-10 rounded-lg"
-            style={{
-              backgroundColor: "#252525",
-              color: "white",
-            }}
+            className="w-full p-3 pl-10 rounded-lg bg-[#252525] text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#ff1f1f] text-sm md:text-base"
           />
           <Search
             size={18}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: 10,
-              transform: "translateY(-50%)",
-              color: "#9CA3AF",
-            }}
+            className="absolute top-1/2 left-3 transform -translate-y-1/2 text-[#9CA3AF]"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label style={{ color: "white" }}>Category</label>
+            <label className="text-white text-sm md:text-base mb-2 block">Category</label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full p-3 rounded-lg"
-              style={{ backgroundColor: "#252525", color: "white" }}
+              className="w-full p-3 rounded-lg bg-[#252525] text-white focus:outline-none focus:ring-2 focus:ring-[#ff1f1f] text-sm md:text-base"
             >
               {categories.map((cat) => (
-                <option key={cat}>{cat}</option>
+                <option key={cat} className="bg-[#252525]">{cat}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label style={{ color: "white" }}>Difficulty</label>
+            <label className="text-white text-sm md:text-base mb-2 block">Difficulty</label>
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="w-full p-3 rounded-lg"
-              style={{ backgroundColor: "#252525", color: "white" }}
+              className="w-full p-3 rounded-lg bg-[#252525] text-white focus:outline-none focus:ring-2 focus:ring-[#ff1f1f] text-sm md:text-base"
             >
               {difficulties.map((d) => (
-                <option key={d}>{d}</option>
+                <option key={d} className="bg-[#252525]">{d}</option>
               ))}
             </select>
           </div>
@@ -222,7 +201,7 @@ export default function GroupClasses() {
       </div>
 
       {/* CLASS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filteredClasses.map((cls) => {
           const joined = joinedClasses.includes(cls.id);
           const color = getCategoryColor(cls.category);
@@ -230,54 +209,39 @@ export default function GroupClasses() {
           return (
             <div
               key={cls.id}
-              className="rounded-lg p-4 shadow-lg"
-              style={{ backgroundColor: "#252525" }}
+              className="rounded-lg p-4 md:p-6 shadow-lg bg-[#252525] hover:scale-105 transition-transform duration-200"
             >
-              <h3 style={{ color: "white", fontSize: "1.4rem" }}>{cls.name}</h3>
-              <p style={{ color: "#9CA3AF" }}>with {cls.instructor}</p>
+              <h3 className="text-white text-lg md:text-xl font-semibold">{cls.name}</h3>
+              <p className="text-[#9CA3AF] text-sm md:text-base">with {cls.instructor}</p>
 
-              <div
-                style={{ marginTop: 12, color: "#9CA3AF" }}
-                className="space-y-2"
-              >
-                <div className="flex gap-2">
+              <div className="mt-3 text-[#9CA3AF] space-y-2 text-sm md:text-base">
+                <div className="flex items-center gap-2">
                   <Clock size={16} />
                   {cls.time}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <Calendar size={16} />
                   {cls.day}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <Users size={16} />
                   {cls.spots} / {cls.totalSpots}
                 </div>
 
-                <div className="flex gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-3">
                   <span
+                    className="px-2 py-1 rounded-full text-xs font-medium"
                     style={{
-                      padding: "4px 10px",
-                      borderRadius: "8px",
                       backgroundColor: color.background,
                       color: color.text,
-                      fontSize: "0.8rem",
                     }}
                   >
                     {cls.category}
                   </span>
 
-                  <span
-                    style={{
-                      padding: "4px 10px",
-                      borderRadius: "8px",
-                      backgroundColor: "#1e1e1e",
-                      color: "#9CA3AF",
-                      fontSize: "0.8rem",
-                      border: "1px solid #333",
-                    }}
-                  >
+                  <span className="px-2 py-1 rounded-full text-xs bg-[#1e1e1e] text-[#9CA3AF] border border-[#333]">
                     {cls.difficulty}
                   </span>
                 </div>
@@ -291,7 +255,7 @@ export default function GroupClasses() {
                     classData: cls,
                   })
                 }
-                className="w-full mt-4 py-3 rounded-lg"
+                className="w-full mt-4 py-3 rounded-lg font-semibold transition-colors text-sm md:text-base"
                 style={{
                   backgroundColor: joined ? "#1a1a1a" : "#ff1f1f",
                   color: "white",
@@ -307,20 +271,20 @@ export default function GroupClasses() {
 
       {/* CONFIRMATION MODAL */}
       {confirmModal.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-[#252525] p-6 rounded-lg text-white">
-            <h3 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#252525] p-4 md:p-6 rounded-lg text-white w-full max-w-md">
+            <h3 className="text-lg md:text-xl font-bold mb-4">
               {confirmModal.classAction === "join"
                 ? "Join Class?"
                 : "Leave Class?"}
             </h3>
 
-            <p>
+            <p className="text-sm md:text-base mb-6">
               Are you sure you want to{" "}
               <strong>{confirmModal.classAction}</strong> this class?
             </p>
 
-            <div className="flex justify-end gap-3 mt-6">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={() =>
                   setConfirmModal({
@@ -329,14 +293,14 @@ export default function GroupClasses() {
                     classData: null,
                   })
                 }
-                className="px-4 py-2 border rounded-lg"
+                className="px-4 py-2 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors text-sm md:text-base"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleConfirmAction}
-                className="px-4 py-2 bg-red-600 rounded-lg"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm md:text-base"
               >
                 Yes
               </button>
@@ -347,25 +311,18 @@ export default function GroupClasses() {
 
       {/* ERROR MODAL (for class full and other errors) */}
       {errorModal.isOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div
-            className="p-6 rounded-xl text-white"
-            style={{
-              backgroundColor: "#252525",
-              width: "420px", // ← MUCH WIDER POPUP
-              maxWidth: "90%",
-            }}
-          >
-            <h3 className="text-2xl font-bold mb-3 text-white">Error</h3>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#252525] p-4 md:p-6 rounded-xl text-white w-full max-w-lg">
+            <h3 className="text-xl md:text-2xl font-bold mb-3">Error</h3>
 
-            <p className="text-white text-lg leading-relaxed">
+            <p className="text-base md:text-lg leading-relaxed mb-6">
               {errorModal.message}
             </p>
 
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-end">
               <button
                 onClick={() => setErrorModal({ isOpen: false, message: "" })}
-                className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium"
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition-colors text-sm md:text-base"
               >
                 OK
               </button>

@@ -210,10 +210,10 @@ export default function NutritionGuidance() {
   const expandedRecipeData = recipes.find((r) => r.id === expandedRecipe);
 
   return (
-    <div>
+    <div className="px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h2 style={{ color: "#ffffff" }}>Healthy Recipes</h2>
-        <p style={{ color: "#9CA3AF" }}>
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl" style={{ color: "#ffffff" }}>Healthy Recipes</h2>
+        <p className="text-sm sm:text-base" style={{ color: "#9CA3AF" }}>
           Nutritious meals with complete calorie and macro breakdown
         </p>
       </div>
@@ -236,21 +236,21 @@ export default function NutritionGuidance() {
             <ImageWithFallback
               src={expandedRecipeData.image}
               alt={expandedRecipeData.name}
-              className="w-full h-96 object-cover"
+              className="w-full h-64 sm:h-80 lg:h-96 object-cover"
             />
 
-            <div className="p-8">
+            <div className="p-4 sm:p-6 lg:p-8">
               <div className="mb-6">
-                <h2 className="mb-3" style={{ color: "#ffffff" }}>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl mb-3" style={{ color: "#ffffff" }}>
                   {expandedRecipeData.name}
                 </h2>
-                <p style={{ color: "#9CA3AF", fontSize: "1.125rem" }}>
+                <p className="text-sm sm:text-base lg:text-lg" style={{ color: "#9CA3AF" }}>
                   {expandedRecipeData.description}
                 </p>
               </div>
 
               <div
-                className="flex items-center gap-6 mb-6"
+                className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6"
                 style={{ color: "#9CA3AF" }}
               >
                 <div className="flex items-center gap-2">
@@ -265,89 +265,89 @@ export default function NutritionGuidance() {
                   </span>
                 </div>
                 <div
-                  className="px-4 py-2 rounded-lg"
+                  className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-sm"
                   style={{ backgroundColor: "#ff1f1f", color: "#ffffff" }}
                 >
                   {expandedRecipeData.category}
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 gap-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 mb-8">
                 <div
-                  className="p-6 rounded-lg text-center"
+                  className="p-4 sm:p-6 rounded-lg text-center"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
                   <p
-                    className="mb-2"
-                    style={{ color: "#ff1f1f", fontSize: "2rem" }}
+                    className="mb-2 text-lg sm:text-xl lg:text-2xl"
+                    style={{ color: "#ff1f1f" }}
                   >
                     {expandedRecipeData.calories}
                   </p>
-                  <p style={{ color: "#9CA3AF" }}>Calories</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#9CA3AF" }}>Calories</p>
                 </div>
                 <div
-                  className="p-6 rounded-lg text-center"
+                  className="p-4 sm:p-6 rounded-lg text-center"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
                   <p
-                    className="mb-2"
-                    style={{ color: "#ffffff", fontSize: "2rem" }}
+                    className="mb-2 text-lg sm:text-xl lg:text-2xl"
+                    style={{ color: "#ffffff" }}
                   >
                     {expandedRecipeData.protein}g
                   </p>
-                  <p style={{ color: "#9CA3AF" }}>Protein</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#9CA3AF" }}>Protein</p>
                 </div>
                 <div
-                  className="p-6 rounded-lg text-center"
+                  className="p-4 sm:p-6 rounded-lg text-center"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
                   <p
-                    className="mb-2"
-                    style={{ color: "#ffffff", fontSize: "2rem" }}
+                    className="mb-2 text-lg sm:text-xl lg:text-2xl"
+                    style={{ color: "#ffffff" }}
                   >
                     {expandedRecipeData.carbs}g
                   </p>
-                  <p style={{ color: "#9CA3AF" }}>Carbs</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#9CA3AF" }}>Carbs</p>
                 </div>
                 <div
-                  className="p-6 rounded-lg text-center"
+                  className="p-4 sm:p-6 rounded-lg text-center"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
                   <p
-                    className="mb-2"
-                    style={{ color: "#ffffff", fontSize: "2rem" }}
+                    className="mb-2 text-lg sm:text-xl lg:text-2xl"
+                    style={{ color: "#ffffff" }}
                   >
                     {expandedRecipeData.fats}g
                   </p>
-                  <p style={{ color: "#9CA3AF" }}>Fats</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#9CA3AF" }}>Fats</p>
                 </div>
                 <div
-                  className="p-6 rounded-lg text-center"
+                  className="p-4 sm:p-6 rounded-lg text-center"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
                   <p
-                    className="mb-2"
-                    style={{ color: "#ffffff", fontSize: "2rem" }}
+                    className="mb-2 text-lg sm:text-xl lg:text-2xl"
+                    style={{ color: "#ffffff" }}
                   >
                     {expandedRecipeData.sugar}g
                   </p>
-                  <p style={{ color: "#9CA3AF" }}>Sugar</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#9CA3AF" }}>Sugar</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                 <div
-                  className="p-6 rounded-lg"
+                  className="p-4 sm:p-6 rounded-lg"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
-                  <h3 className="mb-4" style={{ color: "#ffffff" }}>
+                  <h3 className="mb-4 text-lg sm:text-xl" style={{ color: "#ffffff" }}>
                     Ingredients
                   </h3>
                   <ul className="space-y-3">
                     {expandedRecipeData.ingredients.map((ingredient, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-3"
+                        className="flex items-start gap-3 text-sm sm:text-base"
                         style={{ color: "#9CA3AF" }}
                       >
                         <span style={{ color: "#ff1f1f" }}>•</span>
@@ -358,10 +358,10 @@ export default function NutritionGuidance() {
                 </div>
 
                 <div
-                  className="p-6 rounded-lg"
+                  className="p-4 sm:p-6 rounded-lg"
                   style={{ backgroundColor: "#1a1a1a" }}
                 >
-                  <h3 className="mb-4" style={{ color: "#ffffff" }}>
+                  <h3 className="mb-4 text-lg sm:text-xl" style={{ color: "#ffffff" }}>
                     Instructions
                   </h3>
                   <ol className="space-y-3">
@@ -369,11 +369,11 @@ export default function NutritionGuidance() {
                       (instruction, index) => (
                         <li
                           key={index}
-                          className="flex items-start gap-3"
+                          className="flex items-start gap-3 text-sm sm:text-base"
                           style={{ color: "#9CA3AF" }}
                         >
                           <span
-                            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
+                            className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs sm:text-sm"
                             style={{
                               backgroundColor: "#ff1f1f",
                               color: "#ffffff",
@@ -393,12 +393,12 @@ export default function NutritionGuidance() {
         </div>
       ) : (
         <>
-          <div className="flex gap-3 mb-8">
+          <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className="px-4 py-2 rounded-lg transition-all"
+                className="px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all text-sm sm:text-base"
                 style={{
                   backgroundColor:
                     selectedCategory === category ? "#ff1f1f" : "#252525",
@@ -410,7 +410,7 @@ export default function NutritionGuidance() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
@@ -420,16 +420,16 @@ export default function NutritionGuidance() {
                 <ImageWithFallback
                   src={recipe.image}
                   alt={recipe.name}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
 
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
+                <div className="p-4 sm:p-6">
+                                    <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="mb-2" style={{ color: "#ffffff" }}>
+                      <h3 className="mb-2 text-lg sm:text-xl" style={{ color: "#ffffff" }}>
                         {recipe.name}
                       </h3>
-                      <p className="mb-3" style={{ color: "#9CA3AF" }}>
+                      <p className="mb-3 text-sm sm:text-base" style={{ color: "#9CA3AF" }}>
                         {recipe.description}
                       </p>
                     </div>
@@ -452,12 +452,12 @@ export default function NutritionGuidance() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-2 mb-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4">
                     <div
                       className="p-3 rounded-lg text-center"
                       style={{ backgroundColor: "#1a1a1a" }}
                     >
-                      <p className="mb-1" style={{ color: "#ff1f1f" }}>
+                      <p className="mb-1 text-sm sm:text-base" style={{ color: "#ff1f1f" }}>
                         {recipe.calories}
                       </p>
                       <p style={{ color: "#9CA3AF", fontSize: "0.75rem" }}>
@@ -468,7 +468,7 @@ export default function NutritionGuidance() {
                       className="p-3 rounded-lg text-center"
                       style={{ backgroundColor: "#1a1a1a" }}
                     >
-                      <p className="mb-1" style={{ color: "#ffffff" }}>
+                      <p className="mb-1 text-sm sm:text-base" style={{ color: "#ffffff" }}>
                         {recipe.protein}g
                       </p>
                       <p style={{ color: "#9CA3AF", fontSize: "0.75rem" }}>
@@ -479,7 +479,7 @@ export default function NutritionGuidance() {
                       className="p-3 rounded-lg text-center"
                       style={{ backgroundColor: "#1a1a1a" }}
                     >
-                      <p className="mb-1" style={{ color: "#ffffff" }}>
+                      <p className="mb-1 text-sm sm:text-base" style={{ color: "#ffffff" }}>
                         {recipe.carbs}g
                       </p>
                       <p style={{ color: "#9CA3AF", fontSize: "0.75rem" }}>
@@ -490,7 +490,7 @@ export default function NutritionGuidance() {
                       className="p-3 rounded-lg text-center"
                       style={{ backgroundColor: "#1a1a1a" }}
                     >
-                      <p className="mb-1" style={{ color: "#ffffff" }}>
+                      <p className="mb-1 text-sm sm:text-base" style={{ color: "#ffffff" }}>
                         {recipe.fats}g
                       </p>
                       <p style={{ color: "#9CA3AF", fontSize: "0.75rem" }}>
@@ -501,7 +501,7 @@ export default function NutritionGuidance() {
                       className="p-3 rounded-lg text-center"
                       style={{ backgroundColor: "#1a1a1a" }}
                     >
-                      <p className="mb-1" style={{ color: "#ffffff" }}>
+                      <p className="mb-1 text-sm sm:text-base" style={{ color: "#ffffff" }}>
                         {recipe.sugar}g
                       </p>
                       <p style={{ color: "#9CA3AF", fontSize: "0.75rem" }}>
@@ -512,7 +512,7 @@ export default function NutritionGuidance() {
 
                   <button
                     onClick={() => toggleRecipe(recipe.id)}
-                    className="w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+                    className="w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-opacity hover:opacity-90 text-sm sm:text-base"
                     style={{ backgroundColor: "#ff1f1f", color: "#ffffff" }}
                   >
                     <span>View Recipe</span>
