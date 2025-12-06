@@ -7,7 +7,7 @@ import strongThumb from "../../assets/strongthumb.webp";
 import AchmadCaesar from "../../assets/AchmadCaesarRamadhan.webp";
 import MHDDepa from "../../assets/MHDDepa.webp";
 import MHDHafiz from "../../assets/MHDHafiz.webp";
-import Zahran from "../../assets/stelle.webp";
+import Zahran from "../../assets/Stelle.webp";
 import Muaz from "../../assets/Muaz_wkwk.webp";
 
 export default function AboutUs() {
