@@ -259,7 +259,7 @@ const Table = ({ headers, children }) => (
 const DashboardView = () => {
   const [data, setData] = useState(null);
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/stats`).then((res) => setData(res.data));
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/stats`).then((res) => setData(res.data));
   }, []);
 
   if (!data)
@@ -382,17 +382,25 @@ const ManageUsers = () => {
   const [operationFailedAlert, setOperationFailedAlert] = useState(false);
   const [deleteFailedAlert, setDeleteFailedAlert] = useState(false);
 
-  const fetch = () =>
-    axios.get(`${import.meta.env.VITE_API_URL}/users`).then((res) => setUsers(res.data));
+  const fetchUsers = () =>
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/users`)
+      .then((res) => setUsers(res.data));
+
   useEffect(() => {
-    fetch();
+    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    console.log("USER IDS:", users.map((u) => u.id));
+  }, [users]);
 
   const openAdd = () => {
     setEditData(null);
-    setForm({ username: "", full_name: "", email: "", password: "" });
+    setForm({ username: "", full_name: "", email: "", password: "", status: "active" });
     setModal(true);
   };
+
   const openEdit = (u) => {
     setEditData(u);
     setForm({ ...u, password: "" });
@@ -401,30 +409,47 @@ const ManageUsers = () => {
 
   const submit = async (e) => {
     e.preventDefault();
+
     if (!editData && form.password.length < 6) {
       setPasswordAlert(true);
       return;
     }
+
     try {
-      if (editData) await axios.put(`${import.meta.env.VITE_API_URL}/users/${editData.id}`, form);
-      else await axios.post(`${import.meta.env.VITE_API_URL}/users`, form);
+      if (editData) {
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/api/admin/users/${editData.id}`,
+          form
+        );
+      } else {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/admin/users`,
+          form
+        );
+      }
+
       setModal(false);
-      fetch();
+      fetchUsers();
       setSuccessAlert(true);
-    } catch {
+
+    } catch (err) {
       setOperationFailedAlert(true);
     }
   };
-  const del = (id) => setDeleteModal({ open: true, id });
+
+  const del = (id) => {
+    setDeleteModal({ open: true, id });
+  };
 
   return (
     <div>
       <div className="flex justify-end mb-6">
         <AddBtn onClick={openAdd} label="ADD NEW USER" />
       </div>
+
       <Table headers={["Username", "Full Name", "Email", "Status", "Actions"]}>
         {users.map((u) => (
-          <tr key={u.id} className="hover:bg-[#2A2A2A] transition">
+          <tr key={`${u.id}-${Math.random()}`} className="hover:bg-[#2A2A2A] transition">
             <td className="p-4 font-bold text-white">{u.username}</td>
             <td className="p-4">{u.full_name}</td>
             <td className="p-4 text-gray-500">{u.email}</td>
@@ -438,6 +463,8 @@ const ManageUsers = () => {
           </tr>
         ))}
       </Table>
+
+      {/* CREATE / EDIT MODAL */}
       <Modal
         isOpen={modal}
         onClose={() => setModal(false)}
@@ -461,12 +488,14 @@ const ManageUsers = () => {
             val={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
+
           {editData ? (
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500 uppercase font-bold">
                 Membership Status
               </label>
-                           <select
+
+              <select
                 className="bg-[#2A2A2A] text-white p-3 rounded border border-[#444] focus:border-[#ff1f1f] outline-none"
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
@@ -483,11 +512,12 @@ const ManageUsers = () => {
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
           )}
+
           <SubmitBtn label={editData ? "SAVE CHANGES" : "CREATE USER"} />
         </form>
       </Modal>
 
-      {/* Custom Delete Modal */}
+      {/* DELETE MODAL */}
       <Modal
         isOpen={deleteModal.open}
         onClose={() => setDeleteModal({ open: false, id: null })}
@@ -498,10 +528,12 @@ const ManageUsers = () => {
           <button
             onClick={async () => {
               try {
-                await axios.delete(`${import.meta.env.VITE_API_URL}/users/${deleteModal.id}`);
-                fetch();
+                await axios.delete(
+                  `${import.meta.env.VITE_API_URL}/api/admin/users/${deleteModal.id}`
+                );
+                fetchUsers();
                 setDeleteModal({ open: false, id: null });
-              } catch {
+              } catch (err) {
                 setDeleteFailedAlert(true);
               }
             }}
@@ -509,6 +541,7 @@ const ManageUsers = () => {
           >
             Yes
           </button>
+
           <button
             onClick={() => setDeleteModal({ open: false, id: null })}
             className="flex-1 bg-[#333] hover:bg-[#444] text-white py-3 rounded-lg font-bold transition"
@@ -518,7 +551,7 @@ const ManageUsers = () => {
         </div>
       </Modal>
 
-      {/* Custom Alert Modals */}
+      {/* ALERT MODALS */}
       <Modal
         isOpen={passwordAlert}
         onClose={() => setPasswordAlert(false)}
@@ -589,7 +622,7 @@ const ManagePromos = () => {
   const [deleteModal, setDeleteModal] = useState({ open: false, id: null });
 
   const fetch = () =>
-    axios.get(`${import.meta.env.VITE_API_URL}/promos`).then((res) => setPromos(res.data));
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/promos`).then((res) => setPromos(res.data));
   useEffect(() => {
     fetch();
   }, []);
@@ -611,8 +644,8 @@ const ManagePromos = () => {
   const submit = async (e) => {
     e.preventDefault();
     editData
-      ? await axios.put(`${import.meta.env.VITE_API_URL}/promos/${editData.id}`, form)
-      : await axios.post(`${import.meta.env.VITE_API_URL}/promos`, form);
+      ? await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/promos/${editData.id}`, form)
+      : await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/promos`, form);
     setModal(false);
     fetch();
   };
@@ -724,7 +757,7 @@ const ManagePlans = () => {
   const [deleteModal, setDeleteModal] = useState({ open: false, id: null });
 
   const fetch = () =>
-    axios.get(`${import.meta.env.VITE_API_URL}/plans`).then((res) => setPlans(res.data));
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/plans`).then((res) => setPlans(res.data));
 
   useEffect(() => {
     fetch();
@@ -768,9 +801,9 @@ const ManagePlans = () => {
     };
 
     if (editData) {
-      await axios.put(`${import.meta.env.VITE_API_URL}/plans/${editData.id}`, payload);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/plans/${editData.id}`, payload);
     } else {
-      await axios.post(`${import.meta.env.VITE_API_URL}/plans`, payload);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/plans`, payload);
     }
 
     setModal(false);
@@ -871,7 +904,7 @@ const ManagePlans = () => {
           <button
             onClick={async () => {
               try {
-                await axios.delete(`${import.meta.env.VITE_API_URL}/plans/${deleteModal.id}`);
+                await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/plans/${deleteModal.id}`);
                 fetch();
                 setDeleteModal({ open: false, id: null });
               } catch {
@@ -903,7 +936,7 @@ const ManageClasses = () => {
   const [deleteModal, setDeleteModal] = useState({ open: false, id: null });
 
   const fetch = () =>
-    axios.get(`${import.meta.env.VITE_API_URL}/classes`).then((res) => setClasses(res.data));
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/classes`).then((res) => setClasses(res.data));
 
   useEffect(() => {
     fetch();
@@ -960,9 +993,9 @@ const ManageClasses = () => {
     console.log("PUT payload:", payload);
 
     if (editData) {
-      await axios.put(`${import.meta.env.VITE_API_URL}/classes/${editData.id}`, payload);
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/classes/${editData.id}`, payload);
     } else {
-      await axios.post(`${import.meta.env.VITE_API_URL}/classes`, payload);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/classes`, payload);
     }
 
     setModal(false);
@@ -1126,7 +1159,7 @@ const ManageClasses = () => {
           <button
             onClick={async () => {
               try {
-                await axios.delete(`${import.meta.env.VITE_API_URL}/classes/${deleteModal.id}`);
+                await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/classes/${deleteModal.id}`);
                 fetch();
                 setDeleteModal({ open: false, id: null });
               } catch {
@@ -1203,7 +1236,7 @@ const ScanQR = () => {
   // Send scanned token to backend
   const sendToBackend = async (token) => {
     try {
-      const res = await fetch("http://localhost:3000/api/qr/scan", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/qr/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qr_token: token }),
