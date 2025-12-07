@@ -1,12 +1,4 @@
-import {
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  Edit2,
-  QrCode,
-  UserCircle,
-} from "lucide-react";
+import { User, Mail, Phone, Calendar, Edit2, QrCode } from "lucide-react";
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import axios from "axios";
@@ -22,14 +14,11 @@ export default function Profile() {
     email: "",
     phone: "",
     goal: "",
-    profile_photo: null,
     qr_token: "", // add qr_token here
   };
 
   const [profile, setProfile] = useState(emptyProfile);
   const [editedProfile, setEditedProfile] = useState(emptyProfile);
-  const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
 
   // Fetch user profile and QR token
   useEffect(() => {
@@ -49,18 +38,11 @@ export default function Profile() {
           email: user.email || "",
           phone: user.phone || "",
           goal: user.goal || "",
-          profile_photo: user.profile_photo || null,
           qr_token: "", // initialize empty
         };
 
         setProfile(sanitizedUser);
         setEditedProfile(sanitizedUser);
-
-        setPhotoPreview(
-          sanitizedUser.profile_photo
-            ? `${import.meta.env.VITE_API_URL}${sanitizedUser.profile_photo}`
-            : null
-        );
 
         // Fetch QR token from backend
         if (sanitizedUser.id) {
@@ -84,14 +66,6 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
-  // Handle photo change
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
-  };
-
   // Save profile changes
   const handleSave = async () => {
     try {
@@ -103,8 +77,6 @@ export default function Profile() {
         if (value === null || value === undefined) value = "";
         formData.append(key, value);
       });
-
-      if (photoFile) formData.append("profile_photo", photoFile);
 
       const res = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/edit_profile`,
@@ -126,20 +98,12 @@ export default function Profile() {
         email: updated.email || "",
         phone: updated.phone || "",
         goal: updated.goal || "",
-        profile_photo: updated.profile_photo || null,
         qr_token: profile.qr_token, // keep existing QR token
       };
 
       setProfile(sanitizedUpdated);
       setEditedProfile(sanitizedUpdated);
 
-      setPhotoPreview(
-        sanitizedUpdated.profile_photo
-          ? `${import.meta.env.VITE_API_URL}${sanitizedUpdated.profile_photo}`
-          : null
-      );
-
-      setPhotoFile(null);
       setIsEditing(false);
     } catch (err) {
       console.error("Failed to update profile:", err);
@@ -148,12 +112,6 @@ export default function Profile() {
 
   const handleCancel = () => {
     setEditedProfile(profile);
-    setPhotoPreview(
-      profile.profile_photo
-        ? `${import.meta.env.VITE_API_URL}${profile.profile_photo}`
-        : null
-    );
-    setPhotoFile(null);
     setIsEditing(false);
   };
 
@@ -162,7 +120,9 @@ export default function Profile() {
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div className="mb-4 sm:mb-0">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl" style={{ color: "#ffffff" }}>Profile</h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl" style={{ color: "#ffffff" }}>
+            Profile
+          </h2>
           <p className="text-sm sm:text-base" style={{ color: "#9CA3AF" }}>
             View and edit your personal information
           </p>
@@ -186,54 +146,9 @@ export default function Profile() {
           className="p-4 sm:p-6 rounded-lg flex flex-col items-center"
           style={{ backgroundColor: "#252525" }}
         >
-          <div className="relative w-24 h-24 sm:w-32 sm:h-32 mb-4">
-            <div
-              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden flex items-center justify-center"
-              style={{ backgroundColor: "#1a1a1a" }}
-            >
-              {photoPreview ? (
-                <img
-                  src={photoPreview}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <UserCircle size={48} className="sm:w-16 sm:h-16" style={{ color: "#ff1f1f" }} />
-              )}
-            </div>
-
-            {isEditing && (
-              <label
-                htmlFor="profilePhotoInput"
-                className="absolute bottom-0 right-0 w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-800 hover:opacity-90"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 sm:h-5 sm:w-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </label>
-            )}
-
-            <input
-              id="profilePhotoInput"
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="hidden"
-            />
-          </div>
-
-          <h3 className="text-lg sm:text-xl text-center" style={{ color: "#ffffff" }}>{profile.full_name}</h3>
+          <h3 className="text-lg sm:text-xl text-center" style={{ color: "#ffffff" }}>
+            {profile.full_name}
+          </h3>
           <p className="mt-1 text-sm sm:text-base" style={{ color: "#9CA3AF" }}>
             @{profile.username}
           </p>
@@ -318,10 +233,7 @@ export default function Profile() {
                     placeholder={`Enter your ${label.toLowerCase()}`}
                     value={editedProfile[key] || ""}
                     onChange={(e) =>
-                      setEditedProfile({
-                        ...editedProfile,
-                        [key]: e.target.value,
-                      })
+                      setEditedProfile({ ...editedProfile, [key]: e.target.value })
                     }
                     className="w-full px-4 py-2 rounded-lg text-sm sm:text-base"
                     style={{
