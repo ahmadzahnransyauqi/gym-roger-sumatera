@@ -43,7 +43,7 @@ export default function Billing() {
     setBuying(true);
     try {
       await axios.post(
-        "http://localhost:3000/api/memberships/buy",
+        `${import.meta.env.VITE_API_URL}/api/memberships/buy`,
         { plan_id: selectedPlan.id },
         { headers }
       );
