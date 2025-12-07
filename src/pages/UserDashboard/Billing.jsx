@@ -14,7 +14,7 @@ export default function Billing() {
   // --- Fetch & Normalize Plans ---
   const fetchMembershipPlans = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/admin/plans", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/plans`, {
         headers,
       });
 
