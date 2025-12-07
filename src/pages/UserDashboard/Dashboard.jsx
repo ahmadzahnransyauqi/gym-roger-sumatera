@@ -43,9 +43,12 @@ export default function Dashboard() {
     setLoadingMembership(true);
 
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/memberships/me`, {
-        headers,
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/memberships/me`,
+        {
+          headers,
+        }
+      );
       setMembership(res.data?.membership || null);
     } catch (err) {
       console.log("Membership fetch failed:", err.response?.data || err);
@@ -62,11 +65,21 @@ export default function Dashboard() {
 
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/attendance/success?user_id=${user.id}`,
+        `${import.meta.env.VITE_API_URL}/api/attendance/success?user_id=${
+          user.id
+        }`,
         { headers }
       );
-      // Expect the backend to return JSON array like: [{ id, scanned_at, notes }]
-      setAttendanceHistory(res.data || []);
+
+      // Convert scanned_at to local time (WIB, UTC+7)
+      const localAttendance = (res.data || []).map((a) => ({
+        ...a,
+        scanned_at_local: new Date(a.scanned_at).toLocaleString("en-US", {
+          timeZone: "Asia/Jakarta",
+        }),
+      }));
+
+      setAttendanceHistory(localAttendance);
     } catch (err) {
       console.error("Failed to fetch attendance:", err.response?.data || err);
       setAttendanceHistory([]);
@@ -96,7 +109,9 @@ export default function Dashboard() {
         <div className="p-4 md:p-6 rounded-lg bg-[#252525]">
           <div className="flex items-center gap-2 mb-4">
             <Users size={24} className="text-[#ff1f1f]" />
-            <h3 className="text-white text-lg md:text-xl">Membership Details</h3>
+            <h3 className="text-white text-lg md:text-xl">
+              Membership Details
+            </h3>
           </div>
           {loadingMembership ? (
             <p className="text-[#9CA3AF]">Loading membership...</p>
@@ -129,7 +144,9 @@ export default function Dashboard() {
               </p>
               <p
                 className={`font-bold mt-1 ${
-                  membership.status === "active" ? "text-green-400" : "text-red-400"
+                  membership.status === "active"
+                    ? "text-green-400"
+                    : "text-red-400"
                 }`}
               >
                 Status: {membership.status || "-"}
@@ -216,34 +233,47 @@ export default function Dashboard() {
           <p className="text-[#9CA3AF]">No attendance records found.</p>
         ) : (
           <div className="space-y-3">
-            {attendanceHistory.map((record) => (
-              <div
-                key={record.id}
-                className="p-3 md:p-4 rounded-lg flex flex-col md:flex-row justify-between bg-[#1a1a1a]"
-              >
-                <div className="flex-1 mb-2 md:mb-0">
-                  <span className="px-3 py-1 text-xs rounded bg-[#252525] text-[#ff1f1f]">
-                    Check-in
-                  </span>
-                  <p className="text-white mt-1">
-                    {record.notes || "Attendance recorded"}
-                  </p>
-                  <p className="text-[#9CA3AF]">
-                    {new Date(record.scanned_at).toLocaleDateString("id-ID", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+            {attendanceHistory.map((record) => {
+              // Parse the UTC date
+              const scannedUTC = new Date(record.scanned_at);
+
+              // Convert to Asia/Jakarta (UTC+7)
+              const jakartaOffset = 7 * 60; // minutes
+              const localTime = new Date(
+                scannedUTC.getTime() + jakartaOffset * 60 * 1000
+              );
+
+              // Format date and time
+              const localDate = localTime.toLocaleDateString("id-ID", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              });
+              const localHourMinute = localTime.toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              return (
+                <div
+                  key={record.id}
+                  className="p-3 md:p-4 rounded-lg flex flex-col md:flex-row justify-between bg-[#1a1a1a]"
+                >
+                  <div className="flex-1 mb-2 md:mb-0">
+                    <span className="px-3 py-1 text-xs rounded bg-[#252525] text-[#ff1f1f]">
+                      Check-in
+                    </span>
+                    <p className="text-white mt-1">
+                      {record.notes || "Attendance recorded"}
+                    </p>
+                    <p className="text-[#9CA3AF]">{localDate}</p>
+                  </div>
+                  <p className="text-[#9CA3AF] text-sm md:text-base">
+                    {localHourMinute}
                   </p>
                 </div>
-                <p className="text-[#9CA3AF] text-sm md:text-base">
-                  {new Date(record.scanned_at).toLocaleTimeString("id-ID", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
